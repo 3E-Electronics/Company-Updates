@@ -1,4 +1,25 @@
 Name,Price,Stock,Image Folder
-Arduino Uno,300,25,Images/Product1
-ESP32,200,15,Images/Product2
-Raspberry Pi,4000,10,Images/Product3
+Arduino Uno,0,0,Images/UNO
+ESP32,0,0,Images/ESP32C3
+Raspberry Pi 4 | 8 GB RAM,0,0,Images/RPi4
+USB to TTL Converter | CP2109,0,0,Images/USB_2_TTL
+Lithium Ion Cell | 3.7V 2000mAh | 18650,0,0,Images/Li-Ion
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
