@@ -1,0 +1,4 @@
+Name,Price,Stock,Image Folder
+Arduino Uno,650,25,Images/Product1
+ESP32,1200,15,Images/Product2
+Raspberry Pi,4000,10,Images/Product3
