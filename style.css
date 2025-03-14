@@ -24,6 +24,17 @@ body {
     margin-bottom: 20px;
 }
 
+/* Feed Image Styling */
+.feed-item {
+    margin-bottom: 15px;
+}
+
+.feed-image {
+    max-width: 150px;
+    height: auto;
+    margin-top: 5px;
+}
+
 /* Search Input */
 #search {
     padding: 5px;
