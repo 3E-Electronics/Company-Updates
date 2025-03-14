@@ -27,11 +27,9 @@ async function loadProducts() {
     // Display products dynamically
     function displayProducts(filteredProducts) {
         productContainer.innerHTML = filteredProducts.map(p => `
-            <div class="product">
+            <div class="product" onmouseover="startSlideshow('${p.imageFolder}', this)" onmouseout="stopSlideshow(this)">
                 <div class="image-container">
-                    <button class="nav-btn left-btn" onclick="prevImage(this, '${p.imageFolder}')">⬅️</button>
-                    <img src="${p.imageFolder}/img1.jpg" alt="${p.name}" id="${p.imageFolder.replace(/\//g, '-')}-img">
-                    <button class="nav-btn right-btn" onclick="nextImage(this, '${p.imageFolder}')">➡️</button>
+                    <img src="${p.imageFolder}/img1.jpg" alt="${p.name}">
                 </div>
                 <h4>${p.name}</h4>
                 <p>Price: ₹${p.price}</p>
@@ -50,9 +48,10 @@ async function loadProducts() {
     });
 }
 
-// Image navigation logic
-const imageIndex = {};
+// Slideshow logic on hover
+const imageSlideshows = new Map();
 
+// Get available images dynamically
 async function getImageCount(folder) {
     let count = 0;
     for (let i = 1; i <= 10; i++) {
@@ -67,30 +66,30 @@ async function getImageCount(folder) {
     return count;
 }
 
-// Go to the next image
-async function nextImage(button, folder) {
-    if (!(folder in imageIndex)) {
-        imageIndex[folder] = 1;
-    }
+// Start slideshow on hover
+async function startSlideshow(folder, productElement) {
+    if (imageSlideshows.has(productElement)) return; // Avoid duplicate slideshows
 
-    const imgElement = button.parentElement.querySelector('img');
+    const imageElement = productElement.querySelector('img');
     const totalImages = await getImageCount(folder);
 
-    imageIndex[folder] = (imageIndex[folder] % totalImages) + 1;
-    imgElement.src = `${folder}/img${imageIndex[folder]}.jpg`;
+    if (totalImages <= 1) return; // No slideshow if only one image
+
+    let currentImage = 1;
+    const interval = setInterval(() => {
+        currentImage = (currentImage % totalImages) + 1;
+        imageElement.src = `${folder}/img${currentImage}.jpg`;
+    }, 1500); // Image change every 1.5 seconds
+
+    imageSlideshows.set(productElement, interval);
 }
 
-// Go to the previous image
-async function prevImage(button, folder) {
-    if (!(folder in imageIndex)) {
-        imageIndex[folder] = 1;
+// Stop slideshow on mouse out
+function stopSlideshow(productElement) {
+    if (imageSlideshows.has(productElement)) {
+        clearInterval(imageSlideshows.get(productElement));
+        imageSlideshows.delete(productElement);
     }
-
-    const imgElement = button.parentElement.querySelector('img');
-    const totalImages = await getImageCount(folder);
-
-    imageIndex[folder] = (imageIndex[folder] - 2 + totalImages) % totalImages + 1;
-    imgElement.src = `${folder}/img${imageIndex[folder]}.jpg`;
 }
 
 // Initialize the page
