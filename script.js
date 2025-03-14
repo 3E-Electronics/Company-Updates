@@ -57,29 +57,29 @@ let slideTimers = {};
 async function startSlide(container) {
     const folder = container.dataset.folder;
 
-    // Check for images in the folder dynamically
-    let imageCount = 0;
-    for (let i = 1; i <= 20; i++) {
-        try {
+    try {
+        // Dynamically check images in the folder
+        let imageCount = 0;
+        for (let i = 1; i <= 10; i++) {
             const imageCheck = await fetch(`${folder}/img${i}.jpg`, { method: 'HEAD' });
             if (imageCheck.ok) imageCount++;
-            else break; // No more images found
-        } catch {
-            break; // Handle errors silently
+            else break;
         }
+
+        if (imageCount <= 1) return; // No hover if only 1 image
+
+        let index = 1;
+        slideTimers[folder] = setInterval(() => {
+            index = (index % imageCount) + 1;
+            container.querySelector('img').src = `${folder}/img${index}.jpg`;
+        }, 2000);
+
+    } catch (error) {
+        console.error('Error loading images:', error);
     }
-
-    // Only start slideshow if there are multiple images
-    if (imageCount <= 1) return;
-
-    let index = 1;
-    slideTimers[folder] = setInterval(() => {
-        index = (index % imageCount) + 1;
-        container.querySelector('img').src = `${folder}/img${index}.jpg`;
-    }, 2000);
 }
 
-// Stop the slideshow when mouse leaves
+// Stop the slideshow on mouse out
 function stopSlide(container) {
     clearInterval(slideTimers[container.dataset.folder]);
 }
