@@ -17,7 +17,7 @@ async function loadProducts() {
     const response = await fetch('products.csv');
     const csvText = await response.text();
     const products = csvText.trim().split('\n').slice(1).map(line => {
-        const [name, price, stock, ImageFolder] = line.split(',');
+        const [name, price, stock, imageFolder] = line.split(',');
         return { name, price, stock, imageFolder };
     });
 
