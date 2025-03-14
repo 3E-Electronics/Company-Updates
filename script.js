@@ -5,7 +5,6 @@ async function loadFeed() {
     const feedContainer = document.getElementById('feed-container');
     const feedItems = feedData.trim().split('\n').reverse();
 
-    // Display latest 4 items
     feedContainer.innerHTML = feedItems.slice(0, 4).map(item => {
         const now = new Date();
         now.setHours(now.getHours() + 5, now.getMinutes() + 30);
@@ -25,13 +24,13 @@ async function loadProducts() {
     const productContainer = document.getElementById('product-container');
     const searchInput = document.getElementById('search');
 
+    // Display products dynamically
     function displayProducts(filteredProducts) {
         productContainer.innerHTML = filteredProducts.map(p => `
             <div class="product">
                 <div class="image-container" 
-                    onmouseover="startSlide(this)" 
-                    onmouseout="stopSlide(this)" 
-                    data-folder="${p.imageFolder}">
+                     onmouseover="startSlide(this, '${p.imageFolder}')" 
+                     onmouseout="stopSlide(this)">
                     <img src="${p.imageFolder}/img1.jpg" alt="${p.name}">
                 </div>
                 <h4>${p.name}</h4>
@@ -51,14 +50,12 @@ async function loadProducts() {
     });
 }
 
-// Dynamically Detect Images for Hover
+// Hover Logic - Dynamic Image Slideshow
 let slideTimers = {};
 
-async function startSlide(container) {
-    const folder = container.dataset.folder;
-
+async function startSlide(container, folder) {
     try {
-        // Dynamically check images in the folder
+        // Dynamically count available images
         let imageCount = 0;
         for (let i = 1; i <= 10; i++) {
             const imageCheck = await fetch(`${folder}/img${i}.jpg`, { method: 'HEAD' });
@@ -66,7 +63,8 @@ async function startSlide(container) {
             else break;
         }
 
-        if (imageCount <= 1) return; // No hover if only 1 image
+        // If only one image, do not start slideshow
+        if (imageCount <= 1) return;
 
         let index = 1;
         slideTimers[folder] = setInterval(() => {
@@ -79,12 +77,15 @@ async function startSlide(container) {
     }
 }
 
-// Stop the slideshow on mouse out
+// Stop slideshow when mouse leaves
 function stopSlide(container) {
-    clearInterval(slideTimers[container.dataset.folder]);
+    const folder = container.dataset.folder;
+    if (folder && slideTimers[folder]) {
+        clearInterval(slideTimers[folder]);
+    }
 }
 
-// Initialize the website on load
+// Initialize the page
 window.onload = () => {
     loadFeed();
     loadProducts();
