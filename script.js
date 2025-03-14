@@ -48,23 +48,40 @@ async function loadProducts() {
     });
 }
 
-// Hover Image Slideshow
+// Dynamically Detect Images for Hover
 let slideTimers = {};
 
-function startSlide(container) {
+async function startSlide(container) {
     const folder = container.dataset.folder;
-    let index = 1;
 
+    // Detect image count by checking which images exist
+    let imageCount = 0;
+    for (let i = 1; i <= 20; i++) {
+        try {
+            const imageCheck = await fetch(`${folder}/img${i}.jpg`, { method: 'HEAD' });
+            if (imageCheck.ok) imageCount++;
+            else break; // Stop if no more images
+        } catch {
+            break; // Stop if error occurs
+        }
+    }
+
+    // If only one image exists, no slideshow
+    if (imageCount <= 1) return;
+
+    let index = 1;
     slideTimers[folder] = setInterval(() => {
-        index = (index % 5); // Adjust for max images
+        index = (index % imageCount) + 1;
         container.querySelector('img').src = `${folder}/img${index}.jpg`;
     }, 2000);
 }
 
+// Stop Image Slideshow
 function stopSlide(container) {
     clearInterval(slideTimers[container.dataset.folder]);
 }
 
+// Initialize Website
 window.onload = () => {
     loadFeed();
     loadProducts();
