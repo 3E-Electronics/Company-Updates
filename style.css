@@ -1,0 +1,50 @@
+body {
+    background-color: black;
+    color: yellow;
+    font-family: Arial, sans-serif;
+}
+
+.product {
+    border: 1px solid yellow;
+    padding: 10px;
+    margin: 10px;
+    text-align: center;
+}
+
+.image-container {
+    position: relative;
+    display: inline-block;
+}
+
+.nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.left-btn {
+    left: 5px;
+}
+
+.right-btn {
+    right: 5px;
+}
+
+img {
+    max-width: 200px;
+    height: auto;
+}
+
+#feed-container {
+    margin-bottom: 20px;
+}
+
+#search {
+    padding: 5px;
+    margin-bottom: 20px;
+}
