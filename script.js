@@ -28,10 +28,10 @@ async function loadProducts() {
     function displayProducts(filteredProducts) {
         productContainer.innerHTML = filteredProducts.map(p => `
             <div class="product">
-                <div class="image-container" 
-                     onmouseover="startSlide(this, '${p.imageFolder}')" 
-                     onmouseout="stopSlide(this)">
-                    <img src="${p.imageFolder}/img1.jpg" alt="${p.name}">
+                <div class="image-container">
+                    <button class="nav-btn left-btn" onclick="prevImage(this, '${p.imageFolder}')">⬅️</button>
+                    <img src="${p.imageFolder}/img1.jpg" alt="${p.name}" id="${p.imageFolder.replace(/\//g, '-')}-img">
+                    <button class="nav-btn right-btn" onclick="nextImage(this, '${p.imageFolder}')">➡️</button>
                 </div>
                 <h4>${p.name}</h4>
                 <p>Price: ₹${p.price}</p>
@@ -50,39 +50,47 @@ async function loadProducts() {
     });
 }
 
-// Hover Logic - Dynamic Image Slideshow
-let slideTimers = {};
+// Image navigation logic
+const imageIndex = {};
 
-async function startSlide(container, folder) {
-    try {
-        // Dynamically count available images
-        let imageCount = 0;
-        for (let i = 1; i <= 10; i++) {
-            const imageCheck = await fetch(`${folder}/img${i}.jpg`, { method: 'HEAD' });
-            if (imageCheck.ok) imageCount++;
+async function getImageCount(folder) {
+    let count = 0;
+    for (let i = 1; i <= 10; i++) {
+        try {
+            const response = await fetch(`${folder}/img${i}.jpg`, { method: 'HEAD' });
+            if (response.ok) count++;
             else break;
+        } catch {
+            break;
         }
-
-        // If only one image, do not start slideshow
-        if (imageCount <= 1) return;
-
-        let index = 1;
-        slideTimers[folder] = setInterval(() => {
-            index = (index % imageCount) + 1;
-            container.querySelector('img').src = `${folder}/img${index}.jpg`;
-        }, 2000);
-
-    } catch (error) {
-        console.error('Error loading images:', error);
     }
+    return count;
 }
 
-// Stop slideshow when mouse leaves
-function stopSlide(container) {
-    const folder = container.dataset.folder;
-    if (folder && slideTimers[folder]) {
-        clearInterval(slideTimers[folder]);
+// Go to the next image
+async function nextImage(button, folder) {
+    if (!(folder in imageIndex)) {
+        imageIndex[folder] = 1;
     }
+
+    const imgElement = button.parentElement.querySelector('img');
+    const totalImages = await getImageCount(folder);
+
+    imageIndex[folder] = (imageIndex[folder] % totalImages) + 1;
+    imgElement.src = `${folder}/img${imageIndex[folder]}.jpg`;
+}
+
+// Go to the previous image
+async function prevImage(button, folder) {
+    if (!(folder in imageIndex)) {
+        imageIndex[folder] = 1;
+    }
+
+    const imgElement = button.parentElement.querySelector('img');
+    const totalImages = await getImageCount(folder);
+
+    imageIndex[folder] = (imageIndex[folder] - 2 + totalImages) % totalImages + 1;
+    imgElement.src = `${folder}/img${imageIndex[folder]}.jpg`;
 }
 
 // Initialize the page
