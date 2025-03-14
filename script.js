@@ -1,15 +1,26 @@
-// Load Feed Updates
+// Load Feeds from CSV
 async function loadFeed() {
-    const response = await fetch('feed.txt');
-    const feedData = await response.text();
-    const feedContainer = document.getElementById('feed-container');
-    const feedItems = feedData.trim().split('\n').reverse();
+    try {
+        const response = await fetch('feeds.csv');
+        const feedText = await response.text();
 
-    feedContainer.innerHTML = feedItems.slice(0, 4).map(item => {
-        const now = new Date();
-        now.setHours(now.getHours() + 5, now.getMinutes() + 30);
-        return `<div class="feed-item"><strong>${now.toISOString().split('T')[0]}</strong> - ${item}</div>`;
-    }).join('');
+        const feedContainer = document.getElementById('feed-container');
+        const feedItems = feedText.trim().split('\n').slice(1).reverse(); // Skip header & reverse for recent feeds
+
+        // Create feed HTML dynamically
+        feedContainer.innerHTML = feedItems.map(item => {
+            const [date, message, image] = item.split(',');
+            return `
+                <div class="feed-item">
+                    <strong>${date}</strong> - ${message}
+                    ${image ? `<br><img src="${image.trim()}" alt="Feed Image" class="feed-image">` : ''}
+                </div>
+            `;
+        }).join('');
+    } catch (error) {
+        console.error('Error loading feed:', error);
+        document.getElementById('feed-container').innerHTML = `<p>Failed to load feeds.</p>`;
+    }
 }
 
 // Load Products from CSV
@@ -94,6 +105,6 @@ function stopSlideshow(productElement) {
 
 // Initialize the page
 window.onload = () => {
-    loadFeed();
-    loadProducts();
+    loadFeed();    // Load feeds on page load
+    loadProducts(); // Load products on page load
 };
