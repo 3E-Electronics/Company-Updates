@@ -56,7 +56,7 @@ function startSlide(container) {
     let index = 1;
 
     slideTimers[folder] = setInterval(() => {
-        index = (index % 5) + 1; // Adjust for max images
+        index = (index % 5); // Adjust for max images
         container.querySelector('img').src = `${folder}/img${index}.jpg`;
     }, 2000);
 }
