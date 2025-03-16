@@ -38,7 +38,9 @@ async function loadProducts() {
     // Display products dynamically
     function displayProducts(filteredProducts) {
         productContainer.innerHTML = filteredProducts.map(p => `
-            <div class="product" onmouseover="startSlideshow('${p.imageFolder}', this)" onmouseout="stopSlideshow(this)">
+            <div class="product" 
+                 onmouseover="startSlideshow('${p.imageFolder}', this)" 
+                 onmouseout="stopSlideshow(this)">
                 <div class="image-container">
                     <img src="${p.imageFolder}/img1.jpg" alt="${p.name}">
                 </div>
@@ -79,7 +81,7 @@ async function getImageCount(folder) {
 
 // Start slideshow on hover
 async function startSlideshow(folder, productElement) {
-    if (imageSlideshows.has(productElement)) return; // Avoid duplicate slideshows
+    stopSlideshow(productElement); // Ensure no duplicate slideshows
 
     const imageElement = productElement.querySelector('img');
     const totalImages = await getImageCount(folder);
@@ -92,19 +94,20 @@ async function startSlideshow(folder, productElement) {
         imageElement.src = `${folder}/img${currentImage}.jpg`;
     }, 1500); // Image change every 1.5 seconds
 
-    imageSlideshows.set(productElement, interval);
+    imageSlideshows.set(productElement, { interval, folder });
 }
 
 // Stop slideshow on mouse out
 function stopSlideshow(productElement) {
     if (imageSlideshows.has(productElement)) {
-        clearInterval(imageSlideshows.get(productElement)); // Stop the interval
+        clearInterval(imageSlideshows.get(productElement).interval); // Stop the interval
         imageSlideshows.delete(productElement); // Remove reference from the map
 
         // Reset the image back to the default first image
         const imageElement = productElement.querySelector('img');
-        const imageFolder = productElement.querySelector('.image-container img').src.split('/img')[0];
-        imageElement.src = `${imageFolder}/img1.jpg`;
+        const folder = imageSlideshows.get(productElement)?.folder || 
+            productElement.querySelector('.image-container img').src.split('/img')[0];
+        imageElement.src = `${folder}/img1.jpg`;
     }
 }
 
