@@ -7,7 +7,6 @@ async function loadFeed() {
         const feedContainer = document.getElementById('feed-container');
         const feedItems = feedText.trim().split('\n').slice(1).reverse(); // Skip header & reverse for recent feeds
 
-        // Create feed HTML dynamically
         feedContainer.innerHTML = feedItems.map(item => {
             const [date, message, image] = item.split(',');
             return `
@@ -35,12 +34,9 @@ async function loadProducts() {
     const productContainer = document.getElementById('product-container');
     const searchInput = document.getElementById('search');
 
-    // Display products dynamically
     function displayProducts(filteredProducts) {
         productContainer.innerHTML = filteredProducts.map(p => `
-            <div class="product" 
-                 onmouseenter="startSlideshow('${p.imageFolder}', this)" 
-                 onmouseleave="stopSlideshow(this)">
+            <div class="product" onmouseenter="startSlideshow('${p.imageFolder}', this)" onmouseleave="stopSlideshow(this)">
                 <div class="image-container">
                     <img src="${p.imageFolder}/img1.jpg" alt="${p.name}">
                 </div>
@@ -53,7 +49,6 @@ async function loadProducts() {
 
     displayProducts(products);
 
-    // Search Function
     searchInput.addEventListener('input', () => {
         const query = searchInput.value.toLowerCase();
         const filtered = products.filter(p => p.name.toLowerCase().includes(query));
@@ -61,10 +56,9 @@ async function loadProducts() {
     });
 }
 
-// Slideshow logic on hover
+// Slideshow logic
 const imageSlideshows = new Map();
 
-// Get available images dynamically
 async function getImageCount(folder) {
     let count = 0;
     for (let i = 1; i <= 10; i++) {
@@ -79,39 +73,39 @@ async function getImageCount(folder) {
     return count;
 }
 
-// Start slideshow on hover
+// Start slideshow
 async function startSlideshow(folder, productElement) {
-    stopSlideshow(productElement); // Ensure no duplicate slideshows
+    if (imageSlideshows.has(productElement)) return; 
 
     const imageElement = productElement.querySelector('img');
     const totalImages = await getImageCount(folder);
 
-    if (totalImages <= 1) return; // No slideshow if only one image
+    if (totalImages <= 1) return; 
 
     let currentImage = 1;
     const interval = setInterval(() => {
         currentImage = (currentImage % totalImages) + 1;
         imageElement.src = `${folder}/img${currentImage}.jpg`;
-    }, 1500); // Image change every 1.5 seconds
+    }, 1500);
 
-    imageSlideshows.set(productElement, { interval, folder });
+    imageSlideshows.set(productElement, interval);
 }
 
-// Stop slideshow on mouse leave
+// Stop slideshow on mouse leave (FIXED)
 function stopSlideshow(productElement) {
     if (imageSlideshows.has(productElement)) {
-        clearInterval(imageSlideshows.get(productElement).interval); // Stop the interval
-        const folder = imageSlideshows.get(productElement).folder;
-        imageSlideshows.delete(productElement); // Remove reference from the map
+        clearInterval(imageSlideshows.get(productElement));
+        imageSlideshows.delete(productElement);
 
-        // Reset the image back to the default first image
+        // Reset image to default
         const imageElement = productElement.querySelector('img');
-        imageElement.src = `${folder}/img1.jpg`;
+        const imageFolder = imageElement.src.split('/img')[0];
+        imageElement.src = `${imageFolder}/img1.jpg`;
     }
 }
 
-// Initialize the page
+// Initialize
 window.onload = () => {
-    loadFeed();    // Load feeds on page load
-    loadProducts(); // Load products on page load
+    loadFeed();
+    loadProducts();
 };
