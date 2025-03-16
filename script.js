@@ -98,8 +98,13 @@ async function startSlideshow(folder, productElement) {
 // Stop slideshow on mouse out
 function stopSlideshow(productElement) {
     if (imageSlideshows.has(productElement)) {
-        clearInterval(imageSlideshows.get(productElement));
-        imageSlideshows.delete(productElement);
+        clearInterval(imageSlideshows.get(productElement)); // Stop the interval
+        imageSlideshows.delete(productElement); // Remove reference from the map
+
+        // Reset the image back to the default first image
+        const imageElement = productElement.querySelector('img');
+        const imageFolder = productElement.querySelector('.image-container img').src.split('/img')[0];
+        imageElement.src = `${imageFolder}/img1.jpg`;
     }
 }
 
