@@ -133,6 +133,17 @@
     </section>
     
     <script src="script.js"></script>
-</body>
+
+    <script>
+    function showSection(id) {
+        const sections = ['feed', 'products', 'workshop'];
+        sections.forEach(section => {
+            const el = document.getElementById(section);
+            if (el) el.style.display = (section === id) ? 'block' : 'none';
+        });
+    }
+    </script>
+
+ </body>
 
 </html>
