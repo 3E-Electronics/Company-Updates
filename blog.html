@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <title>Blog - 3E ELECTRONICS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="Images/3E_Electronics_Logo.ico">
+
     <style>
         body {
             background-color: black;
@@ -37,38 +39,49 @@
             margin-top: 5px;
         }
 
+        #contact {
+            font-size: 1em;
+            margin-top: 10px;
+        }
+
         nav {
+            background-color: #111;
+            padding: 10px;
             text-align: center;
-            background-color: #222;
-            padding: 10px 0;
+            border-top: 1px solid gold;
+            border-bottom: 1px solid gold;
         }
 
         nav a {
-            color: white;
-            margin: 0 15px;
+            color: gold;
             text-decoration: none;
+            margin: 0 15px;
             font-weight: bold;
+            font-size: 1.1em;
         }
 
         nav a:hover {
-            color: gold;
+            text-decoration: underline;
         }
 
-        .blog-section {
+        #blog {
             padding: 20px;
         }
 
         .blog-post {
-            margin-bottom: 30px;
-            padding-bottom: 15px;
             border-bottom: 1px solid white;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
         }
 
         .blog-post img {
             max-width: 100%;
             height: auto;
             margin-top: 10px;
-            border: 1px solid white;
+        }
+
+        .blog-post h3 {
+            color: gold;
         }
     </style>
 </head>
@@ -78,6 +91,7 @@
         <img src="Images/logo.png" alt="3E Electronics Logo" class="logo">
         <h1>3E ELECTRONICS</h1>
         <h2>Elevating Electronics Everyday</h2>
+        <div id="contact">Contact: +91 9597949799</div>
     </header>
 
     <nav>
@@ -85,37 +99,22 @@
         <a href="blog.html">Blog</a>
     </nav>
 
-    <section class="blog-section">
-        <h3>Our Blog</h3>
-        <div id="blog-container">Loading blogs...</div>
+    <section id="blog">
+        <h2>Our Blog</h2>
+
+        <div class="blog-post">
+            <h3>How We Built 3E Electronics</h3>
+            <p>We started in 2023 with a vision to simplify electronics. Here's our story...</p>
+            <img src="Images/blog1.jpg" alt="Team working">
+        </div>
+
+        <div class="blog-post">
+            <h3>Behind the Scenes of Product Testing</h3>
+            <p>Ever wondered how our products are tested? Here's a sneak peek...</p>
+            <img src="Images/blog2.jpg" alt="Testing">
+        </div>
+
+        <!-- Add more blog posts as needed -->
     </section>
-
-    <script>
-        async function loadBlog() {
-            try {
-                const response = await fetch('blog.csv');
-                const text = await response.text();
-                const rows = text.trim().split('\n').slice(1);
-
-                const container = document.getElementById('blog-container');
-                container.innerHTML = rows.map(row => {
-                    const [title, date, content, image] = row.split(',');
-                    return `
-                        <div class="blog-post">
-                            <h4>${title}</h4>
-                            <small>${date}</small>
-                            <p>${content}</p>
-                            ${image ? `<img src="${image.trim()}" alt="Blog Image">` : ''}
-                        </div>
-                    `;
-                }).join('');
-            } catch (err) {
-                document.getElementById('blog-container').innerHTML = `<p>Unable to load blogs.</p>`;
-            }
-        }
-
-        window.onload = loadBlog;
-    </script>
 </body>
-
 </html>
