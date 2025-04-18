@@ -133,14 +133,19 @@
     </section>
     
     <script src="script.js"></script>
-
     <script>
     function showSection(id) {
-        const sections = ['feed', 'products', 'workshop'];
-        sections.forEach(section => {
-            const el = document.getElementById(section);
-            if (el) el.style.display = (section === id) ? 'block' : 'none';
-        });
+        const allSections = ['feed', 'products', 'workshop'];
+        
+        if (id === 'feed') {
+            document.getElementById('feed').style.display = 'block';
+            document.getElementById('products').style.display = 'block';
+            document.getElementById('workshop').style.display = 'none';
+        } else if (id === 'workshop') {
+            document.getElementById('feed').style.display = 'none';
+            document.getElementById('products').style.display = 'none';
+            document.getElementById('workshop').style.display = 'block';
+        }
     }
     </script>
 
