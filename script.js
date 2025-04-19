@@ -8,14 +8,17 @@ async function loadFeed() {
         const feedItems = feedText.trim().split('\n').slice(1).reverse(); // Skip header & reverse for recent feeds
 
         feedContainer.innerHTML = feedItems.map(item => {
-            const [date, message, image] = item.split(',');
-            return `
-                <div class="feed-item">
-                    <strong>${date}</strong> - ${message}
-                    ${image ? `<br><img src="${image.trim()}" alt="Feed Image" class="feed-image">` : ''}
-                </div>
-            `;
-        }).join('');
+			const parts = item.split(',');
+			const date = parts[0];
+			const image = parts[parts.length - 1];
+			const message = parts.slice(1, parts.length - 1).join(',');
+			return `
+			<div class="feed-item">
+				<strong>${date}</strong> - ${message}
+				${image ? `<br><img src="${image.trim()}" alt="Feed Image" class="feed-image">` : ''}
+			</div>
+			`;
+		}).join('');
     } catch (error) {
         console.error('Error loading feed:', error);
         document.getElementById('feed-container').innerHTML = `<p>Failed to load feeds.</p>`;
